@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="pin_code">
+    <div class="heading">
+        <h2 class="text-center">OPT CODE</h2>
+    </div>
+    <div class="container">
+        <div class="row">
+            <form>
+              <div class="next-page">
+                <input type="text" oninput='digitValidate(this)' onkeyup='tabChange(1)' maxlength=1 >
+                <input type="text" oninput='digitValidate(this)' onkeyup='tabChange(2)' maxlength=1 >
+                <input type="text" oninput='digitValidate(this)' onkeyup='tabChange(3)' maxlength=1 >
+                -
+                <input type="text" oninput='digitValidate(this)' onkeyup='tabChange(4)' maxlength=1 >
+                <input type="text" oninput='digitValidate(this)' onkeyup='tabChange(5)' maxlength=1 >
+                <input type="text" oninput='digitValidate(this)' onkeyup='tabChange(6)' maxlength=1 >
+              </div>
+              <input type="submit"/>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block script %}
+<script>
+    let digitValidate = function(ele){
+        console.log(ele.value);
+        ele.value = ele.value.replace(/[^0-9]/g,'');
+      }
+
+    let tabChange = function(val){
+          let ele = document.querySelectorAll('input');
+          if(ele[val-1].value != ''){
+            ele[val].focus()
+          }else if(ele[val-1].value == ''){
+            ele[val-2].focus()
+          }   
+      }
+</script>
+{% endblock script %}

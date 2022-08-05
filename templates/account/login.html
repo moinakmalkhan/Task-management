@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="main_form">
+    <div class="container">
+        <div class="row">
+              <div class="col-lg-5 col-md-6 col-sm-8 mx-auto">    
+                  <div class="row form">
+                      {% include 'components/alerts.html' %}
+                      <form method='POST'>
+                          {% csrf_token %}
+                          <h3>LOGIN</h3>
+                          <div class="col-12 mb-4">
+                              {{ form.email }}
+                          </div>
+                          <div class="col-12 mb-4">
+                              {{ form.password}}
+                          </div>
+                          <button type="submit" class="main_btn">LOGIN</button>
+                          <div class="ya text-center">
+                              <p class="text-center">or</p>
+                          </div>
+                          <div class="social_icons">
+                              <span><i class="fa-brands fa-google"></i></span>
+                              <span><i class="fa-brands fa-facebook"></i></span>
+                              <span><i class="fa-brands fa-linkedin"></i></span>
+                          </div>
+                          <div class="already">
+                              <p>Does not have account? <span><a href="{% url 'account:signup' %}" class="text-decoration-underline ">SIGN UP</a></span></p>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+       </div>
+    </div>
+</section>
+{% endblock content %}

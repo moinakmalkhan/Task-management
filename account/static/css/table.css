@@ -1,0 +1,135 @@
+:root {
+
+    --primary-color: #3E9D03;
+    --blue: #1A273A;
+    --black: #43A707;
+    --white-color: #FFFFFF;
+    --Relway: 'Raleway', sans-serif;
+    --Poppins: 'Poppins', sans-serif;
+    --Roboto: 'Roboto', sans-serif;
+}
+.bg-blue {
+    background-color: var(--blue) !important;
+    color: var(--white-color);
+}
+.add-new-task-btn{
+    padding: .7rem 1.3rem !important;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 4rem;
+}
+.table{
+    padding: 2rem 2rem;
+}
+.table-section{
+    padding: 5rem .2rem 10rem .2rem;
+}
+.main{
+    background-color: var(--white-color);
+    padding: 1rem;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+td span{
+      margin: 0px 5px;
+  }
+td span i{
+    font-size: 1rem;
+    color: var(--white-color);
+    cursor: pointer;
+    transform: scale(1);
+    transition: all .3s ease 0s;
+}
+span i:hover{
+    transform: scale(1.25);
+}
+.fa-eye{
+    color: #5DADE2;
+}
+.fa-pen-to-square{
+    color: #F1C40F;
+}
+.fa-trash-can{
+    color: #C0392B;
+}
+.table h4{
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: var(--blue);
+}
+.table-striped>tbody>tr:nth-of-type(odd)>*{
+    height: 10vh !important;
+    width: 25vw;
+}
+
+
+/* Details Css Styling ------------ */
+.card_content{
+    background-color: var(--white-color);
+    width: 100%;
+    padding: 2rem 1.5rem;
+}
+.card_box{
+    padding: 7rem 0rem;
+}
+.card_content{
+    box-shadow: 0px 2px 5px 0px rgba(0,0,0,.2) !important;
+}
+.card_content h2{
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+    font-family: var(--Poppins);
+}
+.card_content h5{
+    font-size: 1.3rem;
+    font-weight: 500;
+    font-family: var(--Poppins);
+}
+.card_content p{
+    font-size: 1rem;
+    font-weight: 400;
+    font-family: var(--Poppins);
+    color: #777;
+}
+
+
+/* Detaile Styling end ---------------------------- */
+
+
+
+@media (max-width: 600px){
+    .table{
+        padding: 2rem 1rem;
+    }
+    td, th {
+        border: 1px solid #dddddd;
+        padding: 2px 1px;
+      }
+      td span i{
+          padding: 5px 3px;
+      }
+      .table h4{
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--blue);
+    }
+    td span{
+        margin: 0px 10px;
+    }
+    .add-new{
+        padding: .65rem 1.1rem;
+        font-size: .9rem;
+    }
+}
+
+.card_content > *{
+    margin-bottom: 2rem;
+}

@@ -1,0 +1,29 @@
+<div class="nav_bar">
+    <div class="logo">
+      <h1>Task Manager</h1>
+    </div>
+    <div class="nav_item">
+      <div class="cancel-btn">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+      <ul>
+        {% if user.is_authenticated %}
+        <li>
+          <a href="{% url 'task:score' %}" {% if '/score' in request.path %}class="active"{% endif %}>Score History</a>
+        </li>
+        <li>
+          <a href="{% url 'task:daily' %}" {% if '/daily' in request.path %}class="active"{% endif %}>Daily Tasks</a>
+        </li>
+        <li>
+          <a href="{% url 'task:list' %}" {% if '/task/list' in request.path %}class="active"{% endif %}>Short-long term Tasks</a>
+        </li>
+        <a href="{% url 'account:logout' %}" class="button button-red">LOGOUT</a>
+        {% else %}
+        <a href="{% url 'account:login' %}" class="button button-green">SIGN IN</a>
+        {% endif %}
+      </ul>
+    </div>
+    <div class="menu-btn">
+      <i class="fa-solid fa-bars"></i>
+    </div>
+  </div>

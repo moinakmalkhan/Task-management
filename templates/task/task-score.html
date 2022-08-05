@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load task_tags %}
+{% load i18n %}
+
+{% block head %}
+<style>
+.simple-anchor {
+    text-decoration: none;   
+    color: #000; 
+}
+
+</style>
+{% endblock head %}
+{% block content %}
+<div class="container pt-4">
+  
+    <div class="card">
+        <div class="card-body m-2">
+            <div class="row">
+                <div class='col-lg-5 col-md-5 col-sm-12 d-flex justify-content-end mb-3'>
+                    <label for="from" class="p-2">From: </label>
+                    <input type="date" class='form-control' id="from" required/>&nbsp;
+                </div>
+                <div class='col-lg-5 col-md-5 col-sm-12 d-flex justify-content-end mb-3'>
+                    <label for="to" class="p-2">To: </label>
+                    <input type="date" class='form-control' id="to" required/>&nbsp;
+                </div>
+                <div class='col-lg-2 col-md-2 col-sm-12 d-flex justify-content-end mb-3'>
+                    <button type="button" onclick="get_tasks()" class="btn btn-primary"><i class="fas fa-search"></i></button>&nbsp;
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class=" pt-4 pb-4 container">
+    <div class="card p-4">
+       
+        <table class="table">
+            <tbody>
+                <tr> 
+                    <th>Date</th>
+                    <th>Score</th>
+                </tr>
+                {% for task in tasks_score %}
+                <tr >
+                    <td>
+                        {{task.created_at__date}}
+                    </td>
+                    <td>
+                        <a href="{% url 'task:daily' %}?created_at__date={{task.created_at__date|date:'Y-m-d'}}" style="text-decoration:none">{{task.score}}</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!--When all task type not found in task_group.grouper-->
+    </div>
+
+    {% if tasks_score.has_other_pages %}
+    <div class="btn-group" role="group" aria-label="Item pagination">
+        {% if tasks_score.has_previous %}
+            <a href="?page={{ tasks_score.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+        {% endif %}
+
+        {% for page_number in tasks_score.paginator.page_range %}
+            {% if tasks_score.number == page_number %}
+                <button class="btn btn-outline-primary active">
+                    <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                </button>
+            {% else %}
+                <a href="?page={{ page_number }}" class="btn btn-outline-primary">
+                    {{ page_number }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if tasks_score.has_next %}
+            <a href="?page={{ tasks_score.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+</div>
+</div>
+
+{% endblock content %}
+{% block script %}
+<script>
+    function get_tasks(){
+        var from = $('#from').val()
+        var to = $('#to').val()
+        if(from && to){
+            window.location.href = `?from=${from}&to=${to}`;
+        }
+    }
+</script>
+{% endblock script %}

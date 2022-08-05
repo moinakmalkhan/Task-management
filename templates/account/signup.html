@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="main_form">
+      <div class="container">
+          <div class="row">
+                <div class="col-lg-5 col-md-6 col-sm-8 mx-auto">    
+                    <div class="row form">
+                        {% include 'components/alerts.html' %}
+                        <form method='POST'>
+                            {% csrf_token %}
+                            <h3>SIGN UP</h3>
+                            <div class="col-12 mb-4">
+                                {{ form.first_name }}
+                            </div>
+                            <div class="col-12 mb-4">
+                                {{ form.last_name }}
+                            </div>
+                            <div class="col-12 mb-4">
+                                {{ form.email }}
+                            </div>
+                            <div class="col-12 mb-4">
+                                {{ form.phone }}
+                            </div>
+                            <div class="col-12 mb-4">
+                                {{ form.password}}
+                            </div>
+                            <div class="col-12 mb-4">
+                                {{ form.password_confirm }}
+                            </div>
+                            <button type="submit" class="main_btn">SIGN UP</button>
+                            <div class="ya text-center">
+                                <p class="text-center">or</p>
+                            </div>
+                            <div class="social_icons">
+                                <span><i class="fa-brands fa-google"></i></span>
+                                <span><i class="fa-brands fa-facebook"></i></span>
+                                <span><i class="fa-brands fa-linkedin"></i></span>
+                            </div>
+                            <div class="already">
+                                <p>Already a user ? <span><a href="{% url 'account:login' %}" class="text-decoration-underline">LOGIN</a></span></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+         </div>
+      </div>
+</section>
+{% endblock content %}

@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="detail">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <div class="row">
+                    <div class="col-lg-10 col-md-10 col-sm-10 col-12 px-3 card_box mx-auto">
+                        <div class='row alert' style="display:None;" id="messages">
+                        </div>
+                        <div class="card_content">
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Name:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.name }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Description:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.description }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Deadline:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.deadline }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Type:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.type }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Score:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.score }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Is Completed:</b>
+                                </div>
+                                <div class='col-md-8' id="is-completed">
+                                    {% if task.is_completed %}Yes {% else %} No{% endif %}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Created at:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.created_at }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-4'>
+                                    <b>Updated at:</b>
+                                </div>
+                                <div class='col-md-8'>
+                                    {{ task.updated_at }}
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-12 d-flex justify-content-center'>
+                                    <button class='add-new-task-btn bg-blue btn-primary p-2 m-3' id="mark-as-btn">
+                                        Mark as {% if task.is_completed %}Pending{% else %} Completed{% endif %} </button>
+                                    <form method="POST" action="{% url 'task:delete' task.id %}">
+                                        {% csrf_token %}
+                                        <button class='add-new-task-btn btn btn-danger p-2 m-3' type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('#mark-as-btn').click(function(){
+            var data = {
+                'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+            };
+            var _this = $(this)
+            $.ajax({
+                url: '{% url 'task:detail' task.id %}',
+                type: 'POST',
+                data: data,
+                success: function(response){
+                    let message = $('#messages')
+                    message.html(response.message);
+                    if (response.is_completed) {
+                        _this.text('Mark as Pending')
+                        $("#is-completed").html('Yes')
+                    } else {
+                        _this.text('Mark as Completed')
+                        $("#is-completed").html('No')
+                    }
+                    message.addClass('alert-success');
+                    message.css('display', 'block');
+                    setTimeout(function(){
+                        message.css('display','None');
+                    }, 3000) ;
+                }
+            });
+        });
+    });
+</script>
+{% endblock script %}

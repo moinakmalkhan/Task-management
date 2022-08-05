@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load task_tags %}
+
+{% block head %}
+<style>
+.simple-anchor {
+    text-decoration: none;   
+    color: #000; 
+}
+
+</style>
+{% endblock head %}
+{% block content %}
+<div class="container">
+    <div class="row mt-3 pt-3" style="background-color: #eeeeee">
+        <div class="card-group">
+            {% csrf_token %}
+            {% for stat in stats %}
+            <div class="col-lg-3 col-md-6 col-sm-12">
+                <div class="card m-2">
+                    <div class="card-body">
+                        <a href="?status={{ stat.status }}" style="text-decoration:none; color:black">
+                            <h6 class="card-title">{{ stat.status }}</h6>
+                            <p class="card-text blue-text"><span class="ml-2" style="font-size: 30px;">{{ stat.count }}</span></p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="card-title">
+                Deadline
+            </div>
+                <div class="row">
+                    <div class='col-lg-8 col-mb-8 col-sm-12 d-flex justify-content-center mb-3'>
+                        <input type="date" class='form-control' id="deadline_input" required/>&nbsp;
+                        <button type="button" onclick="get_tasks('')" class="btn btn-primary"><i class="fas fa-search"></i></button>&nbsp;
+                        <button type="button" class="btn btn-primary" onclick="get_tasks('__gt')"><i class="fa-solid fa-arrow-up"></i></button>&nbsp;
+                        <button type="button" class="btn btn-primary" onclick="get_tasks('__lt')"><i class="fa-solid fa-arrow-down"></i></button>
+                    </div>
+                    <div class='col-lg-4 col-md-4 col-sm-12 d-flex justify-content-end mb-3'>
+                        <a href="{% url 'task:create' %}?duration=Long-Short term"><button type="button" class="add-new-task-btn bg-blue"><i class="fa-solid fa-plus me-2"></i>Add New</button></a>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class=" pt-4 pb-4 container">
+    <div class="card p-4">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+        </li>
+        <li class="nav-item">
+            <a href="#all" class="nav-link active simple-anchor" style="color:black !important;" data-bs-toggle="tab">All</a>
+        </li>
+        {% for task_type in task_types %}
+            <li class="nav-item">
+                <a href="#tab-{{ task_type | text_normailze }}" style="color:black !important;" class="nav-link simple-anchor" data-bs-toggle="tab">{{task_type}}</a>
+            </li>
+        {% endfor %}
+        
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="all">
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <th>Task</th>
+                        <th>Action</th>
+                    </tr>
+                    {% for task in tasks %}
+                    <tr id="task-row-{{task.id}}">
+                        <td>
+                            <a href="{% url 'task:detail' task.id %}" class="simple-anchor" title="Status: {{task.status}}">
+                                {% if task.is_completed %}
+                                <i class="fa-solid fa-check-circle fa-lg" style="color: green"></i>
+                                {% else %}
+                                <i class="fa-solid fa-clock fa-lg" style="color: red;"></i>
+                                {% endif %}  {{ task.name }} | {{ task.type }} | {{ task.deadline }}</a>
+                        </td>
+                        <td>
+                            <span><a href="{% url 'task:update' task.id %}?duration=Long-Short term"><i class="fa-solid fa-pen-to-square me-3" style="font-size:30px; color:black;"></i></a></span>
+                            <span task-id={{ task.id }} url="{% url 'task:delete-api' task.id %}" class='delete-task-btn'><i class="fa-solid fa-trash-can me-3" style="font-size:30px; color:black;"></i></span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% group_by tasks 'type' as tasks_by_task_type %}
+        {% for type, tasks in tasks_by_task_type.items %}
+            <div class="tab-pane fade" id="tab-{{ type | text_normailze }}">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>Task</th>
+                            <th>Action</th>
+                        </tr>
+                        {% for task in tasks %}
+                        <tr id="task-row-{{task.id}}">
+                            <td>
+                                <a href="{% url 'task:detail' task.id %}" class="simple-anchor">
+                                    {% if task.is_completed %}
+                                    <i class="fa-solid fa-check-circle fa-lg" style="color: green"></i>
+                                    {% else %}
+                                    <i class="fa-solid fa-clock fa-lg" style="color: red;"></i>
+                                    {% endif %}  {{ task.name }} | {{ task.deadline }}</a>
+                            </td>
+                            <td>
+                                <span><a href="{% url 'task:update' task.id %}?duration=Long-Short term"><i class="fa-solid fa-pen-to-square me-3" style="font-size:30px; color:black;"></i></a></span>
+                                <span task-id={{ task.id }} url="{% url 'task:delete-api' task.id %}" class='delete-task-btn'><i class="fa-solid fa-trash-can me-3" style="font-size:30px; color:black;"></i></span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endfor %}
+        {% for task_type in task_types %}
+        <!--When all task type not found in task_group.grouper-->
+        <div class="tab-pane fade" id="tab-{{ task_type | text_normailze }}">
+        </div>
+        {% endfor %}
+        {% load i18n %}
+        
+        {% if tasks.has_other_pages %}
+        <div class="btn-group" role="group" aria-label="Item pagination">
+            {% if tasks.has_previous %}
+                <a href="?page={{ tasks.previous_page_number }}" class="btn btn-outline-primary">&laquo;</a>
+            {% endif %}
+    
+            {% for page_number in tasks.paginator.page_range %}
+                {% if tasks.number == page_number %}
+                    <button class="btn btn-outline-primary active">
+                        <span>{{ page_number }} <span class="sr-only">(current)</span></span>
+                    </button>
+                {% else %}
+                    <a href="?page={{ page_number }}" class="btn btn-outline-primary">
+                        {{ page_number }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+    
+            {% if tasks.has_next %}
+                <a href="?page={{ tasks.next_page_number }}" class="btn btn-outline-primary">&raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+
+    </div>
+</div>
+</div>
+</div>
+
+{% endblock content %}
+{% block script %}
+<script>
+    $(document).ready(function(){
+        $('.delete-task-btn').on('click', function(){
+            if(confirm('Are you sure you want to delete this task?')){
+                var task_id = $(this).attr('task-id');
+                var url = $(this).attr('url');
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: {
+                        'task_id': task_id,
+                        'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+                    },
+                    success: function(data){
+                        $('#task-row-' + task_id).remove();
+                    }
+                });
+            }
+        });
+    });
+    function get_tasks(filter){
+        var val = $('#deadline_input').val()
+        if(val){
+            window.location.href = `?deadline__date${filter}=${val}`;
+        }
+    }
+</script>
+{% endblock script %}
