@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  web:
+    build: 
+      context: .
+    volumes:
+      - static_data:/vol/web
+    environment:
+      - SECRET_KEY=django-insecure-g3&aro^mi$$r$$47!gkocpg8wz=&c@%9u8ttw^cln@7zb0x1sf*&
+      - ALLOWED_HOSTS=*
+      - DEBUG=0
+
+  proxy:
+    build: 
+      context: ./proxy
+    volumes:
+      - static_data:/vol/static
+    ports:
+      - "8080:8080"
+    depends_on:
+      - web
+
+volumes:
+  static_data:
