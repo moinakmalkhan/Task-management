@@ -19,6 +19,7 @@ class TestSignUpView(TestCase):
         }
 
         self.url = reverse("account:signup")
+
     def test_get(self):
         res = self.client.get(self.url)
         self.assertEqual(res.status_code, 200)
