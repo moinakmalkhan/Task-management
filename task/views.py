@@ -19,7 +19,7 @@ def get_redirect_url(duration):
     return 'task:daily' if duration == Task.TASK_DUERATION_DAILY else 'task:list'
 
 def get_data_to_search(data, exclude_fields=[]):
-    return {d:data[d] for d in data if d.split("__")[0] in TASK_MODEL_FIELDS_NAME and d.split("__")[0] not in exclude_fields}
+    return {d:data[d] for d in data if d.split("__")[0] in TASK_MODEL_FIELDS_NAME and d.split("__")[0] not in exclude_fields} # noqa
     
 def check_field_in_search_dict(field, search_dict):
     return any([field in f for f in search_dict])
@@ -52,7 +52,9 @@ class TaskScoreView(LoginRequiredMixin, View):
         tasks = request.user.tasks.filter(**data_to_search, duration=Task.TASK_DUERATION_DAILY).distinct()
         if from_ and to:
             tasks = tasks.filter(created_at__date__gte=from_, created_at__date__lte=to)
-        tasks_score = tasks.filter(is_completed=True).values('created_at__date').annotate(score=Sum('score')).values('created_at__date', 'score').order_by('created_at__date')
+        tasks_score = tasks.filter(is_completed=True).values('created_at__date').annotate(
+                                   score=Sum('score')).values('created_at__date', 'score'
+                                ).order_by('created_at__date')
         paginator = Paginator(tasks_score, 50)
         page = data.get('page', 1)
         tasks_score = paginator.get_page(page)
@@ -68,7 +70,7 @@ class TaskListView(LoginRequiredMixin, View):
     def get(self, request):
         data = request.GET.dict()
         data_to_search = get_data_to_search(data,['duration'])
-        tasks = request.user.tasks.filter(**data_to_search, duration=Task.TASK_DUERATION_LONG_SHORT_TERM).distinct()
+        tasks = request.user.tasks.filter(**data_to_search, duration=Task.TASK_DUERATION_LONG_SHORT_TERM).distinct() # noqa
         tasks = tasks.order_by('-id').values("id", "name", "deadline", "type", "is_completed")
         paginator = Paginator(tasks, 10)
         page = data.get('page', 1)
@@ -87,10 +89,9 @@ class TaskDailyView(LoginRequiredMixin, View):
         data_to_search = get_data_to_search(data,['duration'])
         if not check_field_in_search_dict('created_at', data_to_search):
             data_to_search['created_at__date'] = timezone.now().date()
-        tasks = request.user.tasks.filter(**data_to_search, duration=Task.TASK_DUERATION_DAILY).distinct().order_by('-id')
+        tasks = request.user.tasks.filter(**data_to_search, duration=Task.TASK_DUERATION_DAILY).distinct().order_by('-id') # noqa
         score = tasks.values("is_completed").annotate(all_score=Sum("score"))
-        earned_score = 0
-        total_score = 0
+        earned_score = total_score = 0
         if score.exists():
             earned_score_qs = score.filter(is_completed=True)
             if earned_score_qs.exists():
@@ -101,7 +102,7 @@ class TaskDailyView(LoginRequiredMixin, View):
             'tasks': tasks.order_by('deadline').values("id", "name", "deadline", 'is_completed', "type"),
             'total_score': total_score,
             'earned_score': earned_score,
-            'created_at': timezone.datetime.strptime(str(get_field_in_search_dict('created_at', data_to_search)), '%Y-%m-%d'),
+            'created_at': timezone.datetime.strptime(str(get_field_in_search_dict('created_at', data_to_search)), '%Y-%m-%d'), # noqa
             }
         return render(request, self.template_name, context)
 
