@@ -1,5 +1,6 @@
 import re
 
+
 def is_email(email: str) -> bool:
     """
     Check if the given string is a valid email address.

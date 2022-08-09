@@ -37,7 +37,6 @@ class SignUpForm(BaseFrom):
 
         if User.objects.filter(user_profile__phone=phone).exists():
             raise ValidationError({'phone': 'Phone already exists.'})
-        
         return cleaned_data
 
     def save(self):
@@ -55,7 +54,7 @@ class SignUpForm(BaseFrom):
         )
         self.cleaned_data['user'] = user
         return user
-    
+
     def login(self, user=None):
         user = user or self.cleaned_data.get('user')
         login(self.request, user)
@@ -80,7 +79,6 @@ class LoginFrom(BaseFrom):
         cleaned_data['user'] = user
         return cleaned_data
 
-    
     def login(self, user=None):
         user = user or self.cleaned_data.get('user')
         if user:
